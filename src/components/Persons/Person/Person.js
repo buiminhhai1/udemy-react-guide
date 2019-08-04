@@ -1,15 +1,49 @@
-import React from 'react'; 
-
+import React, {Component} from 'react'; 
+import PropTypes from 'prop-types';
+import Aux from '../../../hoc/auxiliary/auxiliary';
 import './Person.css';
+import WithClass from '../../../hoc/WithClass';
+import AuthContext from '../../../context/auth-context';
 
-const person = (props) => {
-   
-    return (
-        <div className="Person">
-            <p onClick={props.click}>I'm {props.name} and I am {props.age} years old</p>
-            <p>{props.children}</p>
-            <input type="text" onChange={props.changed} value={props.name}></input>
-        </div>
-    );
+class Person extends Component {
+
+    constructor(props) {
+        super(props);
+        this.inputElementRef = React.createRef();
+    }
+
+    componentDidMount(){
+        //this.inputElement.focus();
+        this.inputElementRef.current.focus();
+    }
+
+    render(){
+        console.log('Person.js rendering...');
+        return (
+            
+            <Aux>
+                <AuthContext.Consumer>
+                    {(context) => context.authenticated ? <p>Authenticated!</p> : <p>Please Log in</p>}
+                </AuthContext.Consumer>
+                
+                <p onClick={this.props.click}>I'm {this.props.name} and I am {this.props.age} years old</p>
+                <p>{this.props.children}</p>
+                <input 
+                    type="text"
+                    ref={this.inputElementRef}
+                    onChange={this.props.changed} 
+                    value={this.props.name}>
+                </input>
+            </Aux>
+        );
+    }
 }
-export default person;
+
+Person.propTypes = {
+    click: PropTypes.func,
+    name: PropTypes.string,
+    age: PropTypes.number,
+    changed: PropTypes.func,
+}
+
+export default WithClass(Person,"Person");

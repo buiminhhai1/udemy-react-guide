@@ -1,6 +1,29 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Cockpit.css';
-const cockpit = (props) => {
+import AuthContext from '../../context/auth-context';
+const Cockpit = (props) => {
+
+    const toggleBtnRef = useRef(null);
+      
+    // passing second argument is [] === componentDidMount() 
+    useEffect(()=>{
+      console.log("[Cockpit.js] useEffect");
+      // setTimeout(()=>{
+      //   alert("get data from cloud");
+      // }, 1000);
+      toggleBtnRef.current.click();
+      return () => { 
+        console.log("[Cockit.js] cleanup work in useEffect");
+      }
+    }, []);
+
+    useEffect(()=>{
+      console.log("[Cockpit.js] 2nd useEffect");
+      return () => { 
+        console.log("[Cockit.js] 2nd cleanup work in useEffect");
+      }
+    })
+
     const style = {
         backgroundColor: 'green',
         color: 'white',
@@ -15,23 +38,29 @@ const cockpit = (props) => {
     }
 
     const classes = [];
-    if(props.persons.length <= 2){
+    if(props.personsLength <= 2){
       classes.push('red');
     }
-    if(props.persons.length <= 1){
+    if(props.personsLength <= 1){
       classes.push('bold');
     }
 
     return (
     <div>
-        <h1>Hi, I'm a React App</h1>
+        <h1>{props.title}</h1>
         <p className={classes.join(' ')} >This is really working!</p>
         <button
         style={style}
-        onClick={props.toggle}>Toggle Persons</button>
+        onClick={props.toggle}
+        ref={toggleBtnRef}
+        >Toggle Persons</button>
+        <AuthContext.Consumer>
+          {context => <button onClick={context.login}>Log in</button>}
+        </AuthContext.Consumer>
+        
     </div>  
       );
       
 };
 
-export default cockpit;
+export default React.memo(Cockpit);
